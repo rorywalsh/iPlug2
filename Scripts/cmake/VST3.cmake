@@ -210,12 +210,13 @@ function(iplug_configure_vst3 target)
       )
     endif()
     
-    add_custom_command(TARGET ${target} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_directory "${out_dir}" "${install_dir}"
-      COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/out"
-      COMMAND dsymutil "$<TARGET_FILE:${target}>" -o "${CMAKE_BINARY_DIR}/out/${PLUG_NAME}.vst3.dSYM"
-      COMMAND ${CMAKE_COMMAND} -E copy_directory "$<TARGET_BUNDLE_DIR:${target}>.dSYM" "${CMAKE_BINARY_DIR}/out/${PLUG_NAME}.vst3.dSYM" || echo "No dSYM found for VST3"
-    )
+    # I had to remove this because of various post-build issues in Xcode
+    # add_custom_command(TARGET ${target} POST_BUILD
+    #   COMMAND ${CMAKE_COMMAND} -E copy_directory "${out_dir}" "${install_dir}"
+    #   COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/out"
+    #   COMMAND dsymutil "$<TARGET_FILE:${target}>" -o "${CMAKE_BINARY_DIR}/out/${PLUG_NAME}.vst3.dSYM"
+    #   COMMAND ${CMAKE_COMMAND} -E copy_directory "$<TARGET_BUNDLE_DIR:${target}>.dSYM" "${CMAKE_BINARY_DIR}/out/${PLUG_NAME}.vst3.dSYM" || echo "No dSYM found for VST3"
+    # )
 
     set(PKGINFO_FILE "${out_dir}/Contents/PkgInfo")
     file(WRITE ${PKGINFO_FILE} "BNDL????")

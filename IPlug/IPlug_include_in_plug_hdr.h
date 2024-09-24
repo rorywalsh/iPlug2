@@ -42,7 +42,11 @@
   #define API_EXT "aax"
   #define PROTOOLS
 #elif defined APP_API
-  #include "IPlugAPP.h"
+    #if CabbageApp
+        #include "CabbageAPP.h"
+    #else
+        #include "IPlugAPP.h"
+    #endif
   #define PLUGIN_API_BASE IPlugAPP
   #define API_EXT "app"
 #elif defined WAM_API

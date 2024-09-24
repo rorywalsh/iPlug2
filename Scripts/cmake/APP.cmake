@@ -13,21 +13,45 @@ add_library(iPlug2_APP INTERFACE)
 
 # Set common variables
 set(sdk ${IPLUG2_DIR}/IPlug/APP)
-set(_src
-  ${sdk}/IPlugAPP.cpp 
-  ${sdk}/IPlugAPP_dialog.cpp 
-  ${sdk}/IPlugAPP_host.cpp 
-  ${sdk}/IPlugAPP_main.cpp
-  ${IPLUG_DEPS}/RTAudio/RtAudio.cpp
-  ${IPLUG_DEPS}/RTMidi/RtMidi.cpp
-)
-set(_inc
-  ${sdk} 
-  ${IPLUG_DEPS}/RTAudio
-  ${IPLUG_DEPS}/RTAudio/include
-  ${IPLUG_DEPS}/RTMidi
-  ${IPLUG_DEPS}/RTMidi/include
-)
+if(DEFINED CabbageApp)
+  message("Setting custom Cabbage app target src")
+  set(_src
+    ${IPLUG2_DIR}/../cabbage/src/app/CabbageAPP.cpp 
+    ${IPLUG2_DIR}/../cabbage/src/app/CabbageAPP_host.h
+    ${IPLUG2_DIR}/../cabbage/src/app/CabbageAPP_dialog.cpp 
+    ${IPLUG2_DIR}/../cabbage/src/app/CabbageAPP_host.cpp 
+    ${IPLUG2_DIR}/../cabbage/src/app/CabbageAPP_main.cpp
+    ${IPLUG2_DIR}/../cabbage/src/app/CabbageAPP.h
+    ${IPLUG_DEPS}/RTAudio/RtAudio.cpp
+    ${IPLUG_DEPS}/RTMidi/RtMidi.cpp
+  )
+  set(_inc
+    ${IPLUG2_DIR}/../cabbage/src
+    ${IPLUG_DEPS}/RTAudio
+    ${IPLUG_DEPS}/RTAudio/include
+    ${IPLUG_DEPS}/RTMidi
+    ${IPLUG_DEPS}/RTMidi/include
+  )
+else()
+  message("Setting IPlug app target src")
+  set(_src
+    ${sdk}/IPlugAPP.cpp 
+    ${sdk}/IPlugAPP_dialog.cpp 
+    ${sdk}/IPlugAPP_host.cpp 
+    ${sdk}/IPlugAPP_main.cpp
+    ${IPLUG_DEPS}/RTAudio/RtAudio.cpp
+    ${IPLUG_DEPS}/RTMidi/RtMidi.cpp
+  )
+  set(_inc
+    ${sdk} 
+    ${IPLUG_DEPS}/RTAudio
+    ${IPLUG_DEPS}/RTAudio/include
+    ${IPLUG_DEPS}/RTMidi
+    ${IPLUG_DEPS}/RTMidi/include
+  )
+endif()
+
+
 set(_def "APP_API" "IPLUG_EDITOR=1" "IPLUG_DSP=1")
 
 # Platform-specific configurations
@@ -175,14 +199,15 @@ function(iplug_configure_app target)
     source_group("Resources" FILES ${_res})
     iplug_target_add(${target} PUBLIC SOURCE ${_res} RESOURCE ${_res})
 
-    add_custom_command(TARGET ${target} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E make_directory "${out_dir}"
-      COMMAND ${CMAKE_COMMAND} -E copy_directory "$<TARGET_BUNDLE_DIR:${target}>" "${app_out_dir}"
-      COMMAND ${CMAKE_COMMAND} -E copy_directory "$<TARGET_BUNDLE_DIR:${target}>.dSYM" "${out_dir}/${PLUG_NAME}.app.dSYM" || ${CMAKE_COMMAND} -E echo "No .dSYM found, possibly a non-Xcode generator"
-      COMMAND ${CMAKE_COMMAND} -E echo "Attempting to generate dSYM file..."
-      COMMAND dsymutil "$<TARGET_BUNDLE_DIR:${target}>/Contents/MacOS/$<TARGET_FILE_NAME:${target}>" -o "${out_dir}/${PLUG_NAME}.app.dSYM" || ${CMAKE_COMMAND} -E echo "Failed to generate dSYM, continuing build..."
-      COMMAND ${CMAKE_COMMAND} -E echo "App bundle and dSYM processing completed"
-    )
+    # I had to comment these out due to post-build error in Xcode
+    # add_custom_command(TARGET ${target} POST_BUILD
+    #   COMMAND ${CMAKE_COMMAND} -E make_directory "${out_dir}"
+    #   COMMAND ${CMAKE_COMMAND} -E copy_directory "$<TARGET_BUNDLE_DIR:${target}>" "${app_out_dir}"
+    #   COMMAND ${CMAKE_COMMAND} -E copy_directory "$<TARGET_BUNDLE_DIR:${target}>.dSYM" "${out_dir}/${PLUG_NAME}.app.dSYM" || ${CMAKE_COMMAND} -E echo "No .dSYM found, possibly a non-Xcode generator"
+    #   COMMAND ${CMAKE_COMMAND} -E echo "Attempting to generate dSYM file..."
+    #   COMMAND dsymutil "$<TARGET_BUNDLE_DIR:${target}>/Contents/MacOS/$<TARGET_FILE_NAME:${target}>" -o "${out_dir}/${PLUG_NAME}.app.dSYM" || ${CMAKE_COMMAND} -E echo "Failed to generate dSYM, continuing build..."
+    #   COMMAND ${CMAKE_COMMAND} -E echo "App bundle and dSYM processing completed"
+    # )
 
   endif()
 

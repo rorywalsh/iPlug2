@@ -937,7 +937,7 @@ void MidiInCore :: openPort( unsigned int portNumber, const std::string &portNam
   }
 
   CFRunLoopRunInMode( kCFRunLoopDefaultMode, 0, false );
-  unsigned int nSrc = MIDIGetNumberOfSources();
+  unsigned int nSrc = static_cast<unsigned int>(MIDIGetNumberOfSources());
   if ( nSrc < 1 ) {
     errorString_ = "MidiInCore::openPort: no MIDI input sources found!";
     error( RtMidiError::NO_DEVICES_FOUND, errorString_ );
@@ -1051,7 +1051,7 @@ void MidiInCore :: setPortName ( const std::string& )
 unsigned int MidiInCore :: getPortCount()
 {
   CFRunLoopRunInMode( kCFRunLoopDefaultMode, 0, false );
-  return MIDIGetNumberOfSources();
+  return static_cast<unsigned int>(MIDIGetNumberOfSources());
 }
 
 // This function was submitted by Douglas Casey Tucker and apparently
@@ -1142,7 +1142,7 @@ static CFStringRef ConnectedEndpointName( MIDIEndpointRef endpoint )
   if ( connections != NULL ) {
     // It has connections, follow them
     // Concatenate the names of all connected devices
-    nConnected = CFDataGetLength( connections ) / sizeof(MIDIUniqueID);
+    nConnected = static_cast<int>(CFDataGetLength( connections ) / sizeof(MIDIUniqueID));
     if ( nConnected ) {
       const SInt32 *pid = (const SInt32 *)(CFDataGetBytePtr(connections));
       for ( i=0; i<nConnected; ++i, ++pid ) {
@@ -1254,7 +1254,7 @@ void MidiOutCore :: initialize( const std::string& clientName )
 unsigned int MidiOutCore :: getPortCount()
 {
   CFRunLoopRunInMode( kCFRunLoopDefaultMode, 0, false );
-  return MIDIGetNumberOfDestinations();
+  return static_cast<unsigned int>(MIDIGetNumberOfDestinations());
 }
 
 std::string MidiOutCore :: getPortName( unsigned int portNumber )
@@ -1290,7 +1290,7 @@ void MidiOutCore :: openPort( unsigned int portNumber, const std::string &portNa
   }
 
   CFRunLoopRunInMode( kCFRunLoopDefaultMode, 0, false );
-  unsigned int nDest = MIDIGetNumberOfDestinations();
+  unsigned int nDest = static_cast<unsigned int>(MIDIGetNumberOfDestinations());
   if (nDest < 1) {
     errorString_ = "MidiOutCore::openPort: no MIDI output destinations found!";
     error( RtMidiError::NO_DEVICES_FOUND, errorString_ );

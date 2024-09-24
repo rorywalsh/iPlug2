@@ -19,6 +19,9 @@
 #elif defined WEBVIEW_EDITOR_DELEGATE
   #include "IPlugWebViewEditorDelegate.h"
   using EDITOR_DELEGATE_CLASS = iplug::WebViewEditorDelegate;
+#elif defined CUSTOM_EDITOR
+  #include CUSTOM_EDITOR
+  using EDITOR_DELEGATE_CLASS = CUSTOM_EDITOR_CLASS;
 #elif defined NO_IGRAPHICS
   #include "IPlugEditorDelegate.h"
   using EDITOR_DELEGATE_CLASS = iplug::IEditorDelegate;

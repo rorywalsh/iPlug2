@@ -391,14 +391,24 @@ BEGIN_IPLUG_NAMESPACE
 
 #if defined VST2_API || defined VST3_API || defined AAX_API || defined AUv3_API || defined APP_API  || defined WAM_API || defined WEB_API || defined CLAP_API
 
+#ifdef CabbageApp
+Plugin* MakePlug(const iplug::InstanceInfo& info, std::string csdFile)
+{
+    // From VST3 - is this necessary?
+    static WDL_Mutex sMutex;
+    WDL_MutexLock lock(&sMutex);
+    return new PLUG_CLASS_NAME(info, csdFile);
+}
+#else
 Plugin* MakePlug(const iplug::InstanceInfo& info)
 {
-  // From VST3 - is this necessary?
-  static WDL_Mutex sMutex;
-  WDL_MutexLock lock(&sMutex);
-  
-  return new PLUG_CLASS_NAME(info);
+    // From VST3 - is this necessary?
+    static WDL_Mutex sMutex;
+    WDL_MutexLock lock(&sMutex);
+    return new PLUG_CLASS_NAME(info);
 }
+#endif
+
 
 #pragma mark - AUv2
 #elif defined AU_API

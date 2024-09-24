@@ -61,7 +61,8 @@ enum EVST3ParamIDs
 #endif
 };
 
-static const double PI = 3.1415926535897932384626433832795;
+//case conflict with Csound's define..
+//static const double PI = 3.1415926535897932384626433832795;
 
 /** @brief Magic number for gain to dB conversion.
  * Approximates \f$ 20*log_{10}(x) \f$

@@ -696,7 +696,7 @@ RtAudio::DeviceInfo RtApiCore :: getDeviceInfo( unsigned int device )
   }
 
   //const char *mname = CFStringGetCStringPtr( cfname, CFStringGetSystemEncoding() );
-  int length = CFStringGetLength(cfname);
+  int length = static_cast<int>(CFStringGetLength(cfname));
   char *mname = (char *)malloc(length * 3 + 1);
 #if defined( UNICODE ) || defined( _UNICODE )
   CFStringGetCString(cfname, mname, length * 3 + 1, kCFStringEncodingUTF8);
@@ -718,7 +718,7 @@ RtAudio::DeviceInfo RtApiCore :: getDeviceInfo( unsigned int device )
   }
 
   //const char *name = CFStringGetCStringPtr( cfname, CFStringGetSystemEncoding() );
-  length = CFStringGetLength(cfname);
+  length = static_cast<int>(CFStringGetLength(cfname));
   char *name = (char *)malloc(length * 3 + 1);
 #if defined( UNICODE ) || defined( _UNICODE )
   CFStringGetCString(cfname, name, length * 3 + 1, kCFStringEncodingUTF8);
@@ -1084,9 +1084,9 @@ bool RtApiCore :: probeDeviceOpen( unsigned int device, StreamMode mode, unsigne
     return FAILURE;
   }
 
-  if ( bufferRange.mMinimum > *bufferSize ) *bufferSize = (unsigned long) bufferRange.mMinimum;
-  else if ( bufferRange.mMaximum < *bufferSize ) *bufferSize = (unsigned long) bufferRange.mMaximum;
-  if ( options && options->flags & RTAUDIO_MINIMIZE_LATENCY ) *bufferSize = (unsigned long) bufferRange.mMinimum;
+  if ( bufferRange.mMinimum > *bufferSize ) *bufferSize = static_cast<unsigned int>( bufferRange.mMinimum);
+  else if ( bufferRange.mMaximum < *bufferSize ) *bufferSize = static_cast<unsigned int>( bufferRange.mMaximum);
+  if ( options && options->flags & RTAUDIO_MINIMIZE_LATENCY ) *bufferSize = static_cast<unsigned int>( bufferRange.mMinimum);
 
   // Set the buffer size.  For multiple streams, I'm assuming we only
   // need to make this setting for the master channel.

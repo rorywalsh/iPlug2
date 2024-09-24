@@ -1704,8 +1704,8 @@ static id<MTLDevice> mtl_def_device()
     NSLog(@"swell-cocoa: metal blitCommandEncoder failure\n");
   }
 
-  const int texw = [(id<MTLTexture>) m_metal_texture width];
-  const int texh = [(id<MTLTexture>) m_metal_texture height];
+  const int texw = static_cast<unsigned int>([(id<MTLTexture>) m_metal_texture width]);
+  const int texh = static_cast<unsigned int>([(id<MTLTexture>) m_metal_texture height]);
   if (texw < bounds.size.width)
   {
 #ifdef _DEBUG
