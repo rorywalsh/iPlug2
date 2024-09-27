@@ -27,6 +27,7 @@ if(CabbageApp STREQUAL "${CABBAGE_BUILD_TARGET}")
   )
   set(_inc
     "${CMAKE_SOURCE_DIR}/src"
+    ${sdk}
     ${IPLUG_DEPS}/RTAudio
     ${IPLUG_DEPS}/RTAudio/include
     ${IPLUG_DEPS}/RTMidi
