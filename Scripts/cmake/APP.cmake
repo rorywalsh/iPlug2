@@ -13,20 +13,20 @@ add_library(iPlug2_APP INTERFACE)
 
 # Set common variables
 set(sdk ${IPLUG2_DIR}/IPlug/APP)
-if(DEFINED CabbageApp)
+if(CabbageApp STREQUAL "${CABBAGE_BUILD_TARGET}")
   message("Setting custom Cabbage app target src")
   set(_src
-    ${IPLUG2_DIR}/../cabbage/src/app/CabbageAPP.cpp 
-    ${IPLUG2_DIR}/../cabbage/src/app/CabbageAPP_host.h
-    ${IPLUG2_DIR}/../cabbage/src/app/CabbageAPP_dialog.cpp 
-    ${IPLUG2_DIR}/../cabbage/src/app/CabbageAPP_host.cpp 
-    ${IPLUG2_DIR}/../cabbage/src/app/CabbageAPP_main.cpp
-    ${IPLUG2_DIR}/../cabbage/src/app/CabbageAPP.h
+    "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.cpp"
+    "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_host.h"
+    "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_dialog.cpp"
+    "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_host.cpp"
+    "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_main.cpp"
+    "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.h"
     ${IPLUG_DEPS}/RTAudio/RtAudio.cpp
     ${IPLUG_DEPS}/RTMidi/RtMidi.cpp
   )
   set(_inc
-    ${IPLUG2_DIR}/../cabbage/src
+    "${CMAKE_SOURCE_DIR}/src"
     ${IPLUG_DEPS}/RTAudio
     ${IPLUG_DEPS}/RTAudio/include
     ${IPLUG_DEPS}/RTMidi
