@@ -1,6 +1,6 @@
 #  ==============================================================================
-#  
-#  This file is part of the iPlug 2 library. Copyright (C) the iPlug 2 developers. 
+#
+#  This file is part of the iPlug 2 library. Copyright (C) the iPlug 2 developers.
 #
 #  See LICENSE.txt for  more info.
 #
@@ -35,15 +35,15 @@ if(CabbageApp STREQUAL "${CABBAGE_BUILD_TARGET}")
 else()
   message("Setting IPlug app target src")
   set(_src
-    ${sdk}/IPlugAPP.cpp 
-    ${sdk}/IPlugAPP_dialog.cpp 
-    ${sdk}/IPlugAPP_host.cpp 
+    ${sdk}/IPlugAPP.cpp
+    ${sdk}/IPlugAPP_dialog.cpp
+    ${sdk}/IPlugAPP_host.cpp
     ${sdk}/IPlugAPP_main.cpp
     ${IPLUG_DEPS}/RTAudio/RtAudio.cpp
     ${IPLUG_DEPS}/RTMidi/RtMidi.cpp
   )
   set(_inc
-    ${sdk} 
+    ${sdk}
     ${IPLUG_DEPS}/RTAudio
     ${IPLUG_DEPS}/RTAudio/include
     ${IPLUG_DEPS}/RTMidi
@@ -72,7 +72,7 @@ elseif(APPLE)
   iplug_target_add(iPlug2_APP INTERFACE
     DEFINE "__MACOSX_CORE__" "SWELL_COMPILED"
     LINK "-framework AppKit" "-framework CoreMIDI" "-framework CoreAudio"
-    SOURCE 
+    SOURCE
       "${WDL_DIR}/swell/swell-appstub.mm"
       "${WDL_DIR}/swell/swellappmain.mm"
       "${WDL_DIR}/swell/swell-ini.cpp"
@@ -112,14 +112,14 @@ elseif(UNIX AND NOT APPLE)
   list(TRANSFORM swell_src PREPEND "${WDL_DIR}/swell/")
 
   iplug_target_add(iPlug2_APP INTERFACE
-    DEFINE 
-      SWELL_COMPILED SWELL_SUPPORT_GTK SWELL_TARGET_GDK=3 SWELL_LICE_GDI 
+    DEFINE
+      SWELL_COMPILED SWELL_SUPPORT_GTK SWELL_TARGET_GDK=3 SWELL_LICE_GDI
       SWELL_FREETYPE _FILE_OFFSET_BITS=64 WDL_ALLOW_UNSIGNED_DEFAULT_CHAR
-    INCLUDE 
+    INCLUDE
       "${WDL_DIR}/swell/"
       "${WDL_DIR}/lice/"
-    LINK 
-      LICE_Core LICE_PNG LICE_ZLIB 
+    LINK
+      LICE_Core LICE_PNG LICE_ZLIB
       PkgConfig::DEPS "X11" "Xi"
     SOURCE
       ${swell_src}
@@ -145,10 +145,10 @@ else()
 endif()
 
 # Configure iPlug2_APP
-iplug_target_add(iPlug2_APP INTERFACE 
-  INCLUDE ${_inc} 
-  DEFINE ${_def} 
-  SOURCE ${_src} 
+iplug_target_add(iPlug2_APP INTERFACE
+  INCLUDE ${_inc}
+  DEFINE ${_def}
+  SOURCE ${_src}
   LINK iPlug2_Core
 )
 iplug_source_tree(iPlug2_APP)
@@ -161,12 +161,12 @@ function(iplug_configure_app target)
 
   if(WIN32)
     set(res_dir "${CMAKE_BINARY_DIR}/${PLUG_NAME}-app/resources")
-    
+
     set_target_properties(${target} PROPERTIES
       OUTPUT_NAME "${PLUG_NAME}"
       RUNTIME_OUTPUT_DIRECTORY "${PLUG_NAME}-app"
     )
-    
+
     add_custom_command(TARGET ${target} POST_BUILD
       COMMAND "${CMAKE_BINARY_DIR}/postbuild-win.bat"
       ARGS "\"$<TARGET_FILE:${target}>\"" "\".exe\""
@@ -182,7 +182,7 @@ function(iplug_configure_app target)
       XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym"
       XCODE_ATTRIBUTE_GCC_GENERATE_DEBUGGING_SYMBOLS "YES"
     )
-    
+
     if(CMAKE_GENERATOR STREQUAL "Xcode")
       set_target_properties(${target} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY_DEBUG "${out_dir}"
@@ -192,7 +192,7 @@ function(iplug_configure_app target)
 
     target_compile_options(${target} PRIVATE -g)
 
-    set(_res 
+    set(_res
       "${PLUG_RESOURCES_DIR}/${PLUG_NAME}.icns"
       "${PLUG_RESOURCES_DIR}/${PLUG_NAME}-macOS-MainMenu.xib"
     )
