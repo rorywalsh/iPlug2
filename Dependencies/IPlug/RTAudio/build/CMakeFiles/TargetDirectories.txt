@@ -1,0 +1,8 @@
+/Users/rwalsh/Downloads/rtaudio-master/build/CMakeFiles/rtaudio.dir
+/Users/rwalsh/Downloads/rtaudio-master/build/CMakeFiles/uninstall.dir
+/Users/rwalsh/Downloads/rtaudio-master/build/CMakeFiles/edit_cache.dir
+/Users/rwalsh/Downloads/rtaudio-master/build/CMakeFiles/rebuild_cache.dir
+/Users/rwalsh/Downloads/rtaudio-master/build/CMakeFiles/list_install_components.dir
+/Users/rwalsh/Downloads/rtaudio-master/build/CMakeFiles/install.dir
+/Users/rwalsh/Downloads/rtaudio-master/build/CMakeFiles/install/local.dir
+/Users/rwalsh/Downloads/rtaudio-master/build/CMakeFiles/install/strip.dir

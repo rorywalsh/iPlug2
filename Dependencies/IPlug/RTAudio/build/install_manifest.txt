@@ -1,0 +1,10 @@
+/usr/local/lib/librtaudio.7.0.0.dylib
+/usr/local/lib/librtaudio.7.dylib
+/usr/local/lib/librtaudio.dylib
+/usr/local/include/rtaudio/RtAudio.h
+/usr/local/include/rtaudio/rtaudio_c.h
+/usr/local/share/rtaudio/RtAudioConfig.cmake
+/usr/local/share/rtaudio/RtAudioConfig-version.cmake
+/usr/local/share/rtaudio/RtAudioTargets.cmake
+/usr/local/share/rtaudio/RtAudioTargets-noconfig.cmake
+/usr/local/lib/pkgconfig/rtaudio.pc
