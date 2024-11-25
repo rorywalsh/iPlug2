@@ -1,6 +1,6 @@
 #include "asiosys.h"
 #include "asio.h"
-
+#include <combaseapi.h>
 /* Forward Declarations */ 
 
 #ifndef __ASIODRIVER_FWD_DEFINED__
