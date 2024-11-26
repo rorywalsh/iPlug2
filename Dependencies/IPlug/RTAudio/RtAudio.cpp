@@ -52,8 +52,8 @@
 #include <locale>
 
 #if defined(_WIN32)
-  #include <windows.h>
-  #include <objbase.h>
+#include <windows.h>
+#include <objbase.h> // Include this header for CoInitialize
 #endif
 
 // Static variable definitions.

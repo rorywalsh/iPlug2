@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "iasiodrv.h"
 #include "asiolist.h"
-
+#include <objbase.h> // Include this header for CoInitialize
 #define ASIODRV_DESC		"description"
 #define INPROC_SERVER		"InprocServer32"
 #define ASIO_PATH			"software\\asio"
@@ -140,7 +140,8 @@ static void deleteDrvStruct (LPASIODRVSTRUCT lpdrv)
 			iasio = (IASIO *)lpdrv->asiodrv;
 			iasio->Release();
 		}
-		delete lpdrv;
+		//delete lpdrv;
+    delete[] lpdrv; // correction from Axel Holzinger
 	}
 }
 
@@ -166,7 +167,6 @@ AsioDriverList::AsioDriverList ()
 	LPASIODRVSTRUCT	pdl;
 	LONG 			cr;
 	DWORD			index = 0;
-	BOOL			fin = FALSE;
 
 	numdrv		= 0;
 	lpdrvlist	= 0;
@@ -184,7 +184,6 @@ AsioDriverList::AsioDriverList ()
 #endif
 			lpdrvlist = newDrvStruct (hkEnum,keyname,0,lpdrvlist);
 		}
-		else fin = TRUE;
 	}
 	if (hkEnum) RegCloseKey(hkEnum);
 
