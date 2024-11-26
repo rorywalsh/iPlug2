@@ -13,7 +13,7 @@ add_library(iPlug2_APP INTERFACE)
 
 # Set common variables
 set(sdk ${IPLUG2_DIR}/IPlug/APP)
-if(CabbageApp STREQUAL "${CABBAGE_BUILD_TARGET}")
+if(CabbageApp STREQUAL "${CABBAGE_BUILD_TARGET}" OR CabbageStandaloneApp STREQUAL "${CABBAGE_BUILD_TARGET}")
   message("Setting custom Cabbage app target src")
   set(_src
     "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.cpp"
