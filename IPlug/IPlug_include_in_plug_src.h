@@ -454,7 +454,7 @@ Steinberg::FUnknown* MakeProcessor()
 #error "No API defined!"
 #endif
 
-#pragma mark - ** Config Utility **
+#pragma mark - ** Config Utility ** 
 
 static Config MakeConfig(int nParams, int nPresets)
 {
