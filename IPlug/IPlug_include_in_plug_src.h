@@ -9,7 +9,7 @@
 */
 
 #pragma once
-
+#include "CabbageUtils.h"
 /**
  * @file IPlug_include_in_plug_src.h
  * @brief IPlug source include
@@ -17,6 +17,44 @@
  * A preprocessor macro for a particular API such as VST2_API should be defined at project level
  * Depending on the API macro defined, a different entry point and helper methods are activated
 */
+
+static const Steinberg::FUID& getProcessorUID()
+{
+    // Default pluginId value
+    std::string pluginId = "#x2B";
+    
+    const std::string cabbageJson(cabbage::File::getCabbageSection());
+    if(nlohmann::json::accept(cabbageJson))
+    {
+        nlohmann::json jsonArray = nlohmann::json::parse(cabbageJson);
+
+
+        // Iterate through the JSON array
+        for (const auto& obj : jsonArray) 
+        {
+            // Check if the type is "form"
+            if (obj.contains("type") && obj["type"] == "form") 
+            {
+                // Extract the pluginId or use the default value
+                pluginId = obj.value("pluginId", "#x2B");
+                break; // Stop searching once we find the "form" object
+            }
+        }
+    }
+
+    // Convert pluginId (std::string) to a single uint32_t value
+    uint32_t pluginIdUInt32 = 0;
+    
+    // Loop over the first 4 characters of pluginId and combine them into a uint32_t
+    for (size_t i = 0; i < std::min(pluginId.size(), 4ul); ++i) {
+        pluginIdUInt32 |= static_cast<uint32_t>(pluginId[i]) << (8 * (3 - i));
+    }
+
+    // Create a Steinberg::FUID using the uint32_t values
+    static Steinberg::FUID processorUID(0xF2AEE70D, 0x00DE4F4E, 'Cabb', pluginIdUInt32);
+    
+    return processorUID;
+}
 
 #pragma mark - OS_WIN
 
@@ -139,7 +177,7 @@
 
   BEGIN_FACTORY_DEF(PLUG_MFR, PLUG_URL_STR, PLUG_EMAIL_STR)
 
-  DEF_CLASS2(INLINE_UID_FROM_FUID(FUID(VST3_PROCESSOR_UID)),
+  DEF_CLASS2(INLINE_UID_FROM_FUID(getProcessorUID()),
               Steinberg::PClassInfo::kManyInstances,          // cardinality
               kVstAudioEffectClass,                           // the component category (don't change this)
               PLUG_NAME,                                      // plug-in name
@@ -164,7 +202,9 @@
 
   BEGIN_FACTORY_DEF(PLUG_MFR, PLUG_URL_STR, PLUG_EMAIL_STR)
 
-  DEF_CLASS2 (INLINE_UID_FROM_FUID(FUID(VST3_PROCESSOR_UID)),
+
+
+  DEF_CLASS2 (INLINE_UID_FROM_FUID(getProcessorUID()),
               PClassInfo::kManyInstances,                     // cardinality
               kVstAudioEffectClass,                           // the component category (do not changed this)
               PLUG_NAME,                                      // here the Plug-in name (to be changed)
