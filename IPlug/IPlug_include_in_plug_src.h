@@ -17,6 +17,59 @@
  * A preprocessor macro for a particular API such as VST2_API should be defined at project level
  * Depending on the API macro defined, a different entry point and helper methods are activated
 */
+
+struct ProcessorInfo{
+    std::string pluginName;
+    uint32 uniqueId;
+#if defined VST3_API || VST3C_API || defined VST3P_API
+    Steinberg::FUID uid;
+#endif
+};
+
+static const ProcessorInfo getProcessorUID()
+{
+    ProcessorInfo pluginInfo;
+    
+    // Default pluginId value
+    std::string pluginId = "#x2B";
+    
+    const std::string cabbageJson(cabbage::File::getCabbageSection());
+    const std::string pluginName(cabbage::File::getCsdWithoutExtension());
+    if(nlohmann::json::accept(cabbageJson))
+    {
+        nlohmann::json jsonArray = nlohmann::json::parse(cabbageJson);
+
+
+        // Iterate through the JSON array
+        for (const auto& obj : jsonArray)
+        {
+            // Check if the type is "form"
+            if (obj.contains("type") && obj["type"] == "form")
+            {
+                // Extract the pluginId or use the default value
+                pluginId = obj.value("pluginId", "#x2B");
+                break; // Stop searching once we find the "form" object
+            }
+        }
+    }
+
+    pluginInfo.pluginName = pluginName;
+    // Convert pluginId (std::string) to a single uint32_t value
+    uint32_t pluginIdUInt32 = 0;
+    
+    // Loop over the first 4 characters of pluginId and combine them into a uint32_t
+    for (size_t i = 0; i < std::min(pluginId.size(), 4ul); ++i) {
+        pluginIdUInt32 |= static_cast<uint32_t>(pluginId[i]) << (8 * (3 - i));
+    }
+
+    // Create a Steinberg::FUID using the uint32_t values
+#if defined VST3_API || VST3C_API || defined VST3P_API
+    pluginInfo.uid = Steinberg::FUID(0xF2AEE70D, 0x00DE4F4E, 'Cabb', pluginIdUInt32);
+#endif
+    
+    return pluginInfo;
+}
+
 #pragma mark - OS_WIN
 
 // clang-format off
@@ -102,54 +155,6 @@
   #include "public.sdk/source/main/pluginfactory.h"
   #include "pluginterfaces/vst/ivstcomponent.h"
   #include "pluginterfaces/vst/ivsteditcontroller.h"
-
-struct ProcessorInfo{
-    std::string pluginName;
-    uint32 uniqueId;
-    Steinberg::FUID uid;
-};
-
-static const ProcessorInfo getProcessorUID()
-{
-    ProcessorInfo pluginInfo;
-    
-    // Default pluginId value
-    std::string pluginId = "#x2B";
-    
-    const std::string cabbageJson(cabbage::File::getCabbageSection());
-    const std::string pluginName(cabbage::File::getCsdWithoutExtension());
-    if(nlohmann::json::accept(cabbageJson))
-    {
-        nlohmann::json jsonArray = nlohmann::json::parse(cabbageJson);
-
-
-        // Iterate through the JSON array
-        for (const auto& obj : jsonArray)
-        {
-            // Check if the type is "form"
-            if (obj.contains("type") && obj["type"] == "form")
-            {
-                // Extract the pluginId or use the default value
-                pluginId = obj.value("pluginId", "#x2B");
-                break; // Stop searching once we find the "form" object
-            }
-        }
-    }
-
-    pluginInfo.pluginName = pluginName;
-    // Convert pluginId (std::string) to a single uint32_t value
-    uint32_t pluginIdUInt32 = 0;
-    
-    // Loop over the first 4 characters of pluginId and combine them into a uint32_t
-    for (size_t i = 0; i < std::min(pluginId.size(), 4ul); ++i) {
-        pluginIdUInt32 |= static_cast<uint32_t>(pluginId[i]) << (8 * (3 - i));
-    }
-
-    // Create a Steinberg::FUID using the uint32_t values
-    pluginInfo.uid = Steinberg::FUID(0xF2AEE70D, 0x00DE4F4E, 'Cabb', pluginIdUInt32);
-    
-    return pluginInfo;
-}
 
 #if !defined VST3_PROCESSOR_UID && !defined VST3_CONTROLLER_UID
 #define VST3_PROCESSOR_UID 0xF2AEE70D, 0x00DE4F4E, PLUG_MFR_ID, PLUG_UNIQUE_ID
