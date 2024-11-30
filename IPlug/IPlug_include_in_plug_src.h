@@ -96,12 +96,28 @@
   };
 #pragma mark - VST3 (All)
 
-static const Steinberg::FUID& getProcessorUID()
+
+
+#elif defined VST3_API || VST3C_API || defined VST3P_API
+  #include "public.sdk/source/main/pluginfactory.h"
+  #include "pluginterfaces/vst/ivstcomponent.h"
+  #include "pluginterfaces/vst/ivsteditcontroller.h"
+
+struct ProcessorInfo{
+    std::string pluginName;
+    uint32 uniqueId;
+    Steinberg::FUID uid;
+};
+
+static const ProcessorInfo getProcessorUID()
 {
+    ProcessorInfo pluginInfo;
+    
     // Default pluginId value
     std::string pluginId = "#x2B";
     
     const std::string cabbageJson(cabbage::File::getCabbageSection());
+    const std::string pluginName(cabbage::File::getCsdWithoutExtension());
     if(nlohmann::json::accept(cabbageJson))
     {
         nlohmann::json jsonArray = nlohmann::json::parse(cabbageJson);
@@ -120,6 +136,7 @@ static const Steinberg::FUID& getProcessorUID()
         }
     }
 
+    pluginInfo.pluginName = pluginName;
     // Convert pluginId (std::string) to a single uint32_t value
     uint32_t pluginIdUInt32 = 0;
     
@@ -129,15 +146,10 @@ static const Steinberg::FUID& getProcessorUID()
     }
 
     // Create a Steinberg::FUID using the uint32_t values
-    static Steinberg::FUID processorUID(0xF2AEE70D, 0x00DE4F4E, 'Cabb', pluginIdUInt32);
+    pluginInfo.uid = Steinberg::FUID(0xF2AEE70D, 0x00DE4F4E, 'Cabb', pluginIdUInt32);
     
-    return processorUID;
+    return pluginInfo;
 }
-
-#elif defined VST3_API || VST3C_API || defined VST3P_API
-  #include "public.sdk/source/main/pluginfactory.h"
-  #include "pluginterfaces/vst/ivstcomponent.h"
-  #include "pluginterfaces/vst/ivsteditcontroller.h"
 
 #if !defined VST3_PROCESSOR_UID && !defined VST3_CONTROLLER_UID
 #define VST3_PROCESSOR_UID 0xF2AEE70D, 0x00DE4F4E, PLUG_MFR_ID, PLUG_UNIQUE_ID
@@ -177,10 +189,10 @@ static const Steinberg::FUID& getProcessorUID()
 
   BEGIN_FACTORY_DEF(PLUG_MFR, PLUG_URL_STR, PLUG_EMAIL_STR)
 
-  DEF_CLASS2(INLINE_UID_FROM_FUID(getProcessorUID()),
+  DEF_CLASS2(INLINE_UID_FROM_FUID(getProcessorUID().uid),
               Steinberg::PClassInfo::kManyInstances,          // cardinality
               kVstAudioEffectClass,                           // the component category (don't change this)
-              PLUG_NAME,                                      // plug-in name
+              getProcessorUID().pluginName.c_str(),                                      // plug-in name
               Steinberg::Vst::kSimpleModeSupported,           // means gui and plugin aren't split
               VST3_SUBCATEGORY,                               // Subcategory for this plug-in
               PLUG_VERSION_STR,                               // plug-in version
@@ -204,10 +216,10 @@ static const Steinberg::FUID& getProcessorUID()
 
 
 
-  DEF_CLASS2 (INLINE_UID_FROM_FUID(getProcessorUID()),
+  DEF_CLASS2 (INLINE_UID_FROM_FUID(getProcessorUID().uid),
               PClassInfo::kManyInstances,                     // cardinality
               kVstAudioEffectClass,                           // the component category (do not changed this)
-              PLUG_NAME,                                      // here the Plug-in name (to be changed)
+              getProcessorUID().pluginName.c_str(),                                      // here the Plug-in name (to be changed)
               Vst::kDistributable,                            // means component/controller can on different computers
               VST3_SUBCATEGORY,                               // Subcategory for this Plug-in (to be changed)
               PLUG_VERSION_STR,                               // Plug-in version (to be changed)
@@ -498,7 +510,7 @@ Steinberg::FUnknown* MakeProcessor()
 
 static Config MakeConfig(int nParams, int nPresets)
 {
-  return Config(nParams, nPresets, PLUG_CHANNEL_IO, PLUG_NAME, PLUG_NAME, PLUG_MFR, PLUG_VERSION_HEX, PLUG_UNIQUE_ID, PLUG_MFR_ID, PLUG_LATENCY, PLUG_DOES_MIDI_IN, PLUG_DOES_MIDI_OUT, PLUG_DOES_MPE, PLUG_DOES_STATE_CHUNKS, PLUG_TYPE, PLUG_HAS_UI, PLUG_WIDTH, PLUG_HEIGHT, PLUG_HOST_RESIZE, PLUG_MIN_WIDTH, PLUG_MAX_WIDTH, PLUG_MIN_HEIGHT, PLUG_MAX_HEIGHT, BUNDLE_ID, APP_GROUP_ID); // TODO: Product Name?
+  return Config(nParams, nPresets, PLUG_CHANNEL_IO, getProcessorUID().pluginName.c_str(), getProcessorUID().pluginName.c_str(), PLUG_MFR, PLUG_VERSION_HEX, getProcessorUID().uniqueId, PLUG_MFR_ID, PLUG_LATENCY, PLUG_DOES_MIDI_IN, PLUG_DOES_MIDI_OUT, PLUG_DOES_MPE, PLUG_DOES_STATE_CHUNKS, PLUG_TYPE, PLUG_HAS_UI, PLUG_WIDTH, PLUG_HEIGHT, PLUG_HOST_RESIZE, PLUG_MIN_WIDTH, PLUG_MAX_WIDTH, PLUG_MIN_HEIGHT, PLUG_MAX_HEIGHT, BUNDLE_ID, APP_GROUP_ID); // TODO: Product Name?
 }
 
 END_IPLUG_NAMESPACE
