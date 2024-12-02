@@ -58,7 +58,7 @@ static const ProcessorInfo getProcessorUID()
     uint32_t pluginIdUInt32 = 0;
     
     // Loop over the first 4 characters of pluginId and combine them into a uint32_t
-    for (size_t i = 0; i < std::min(pluginId.size(), 4ul); ++i) {
+    for (size_t i = 0; i < std::min<size_t>(pluginId.size(), 4ul); ++i) {
         pluginIdUInt32 |= static_cast<uint32_t>(pluginId[i]) << (8 * (3 - i));
     }
 
