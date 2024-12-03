@@ -21,7 +21,7 @@ list(APPEND CMAKE_MODULE_PATH ${IPLUG2_CMAKE_DIR})
 set(IPLUG2_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 # Make sure MSVC uses static linking for compatibility with Skia libraries and easier distribution.
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:DebugDLL>")
 
 # We generate folders for targets that support it (Visual Studio, Xcode, etc.)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
