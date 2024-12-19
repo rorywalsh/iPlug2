@@ -56,7 +56,6 @@ static const ProcessorInfo getProcessorUID()
     pluginInfo.pluginName = pluginName;
     // Convert pluginId (std::string) to a single uint32_t value
     uint32_t pluginIdUInt32 = 0;
-    
     // Loop over the first 4 characters of pluginId and combine them into a uint32_t
     for (size_t i = 0; i < std::min<size_t>(pluginId.size(), 4ul); ++i) {
         pluginIdUInt32 |= static_cast<uint32_t>(pluginId[i]) << (8 * (3 - i));
@@ -513,9 +512,9 @@ Steinberg::FUnknown* MakeProcessor()
 
 #pragma mark - ** Config Utility ** 
 
-static Config MakeConfig(int nParams, int nPresets)
+static Config MakeConfig(int nParams, int nPresets, const std::string& configIO)
 {
-  return Config(nParams, nPresets, PLUG_CHANNEL_IO, getProcessorUID().pluginName.c_str(), getProcessorUID().pluginName.c_str(), PLUG_MFR, PLUG_VERSION_HEX, getProcessorUID().uniqueId, PLUG_MFR_ID, PLUG_LATENCY, PLUG_DOES_MIDI_IN, PLUG_DOES_MIDI_OUT, PLUG_DOES_MPE, PLUG_DOES_STATE_CHUNKS, PLUG_TYPE, PLUG_HAS_UI, PLUG_WIDTH, PLUG_HEIGHT, PLUG_HOST_RESIZE, PLUG_MIN_WIDTH, PLUG_MAX_WIDTH, PLUG_MIN_HEIGHT, PLUG_MAX_HEIGHT, BUNDLE_ID, APP_GROUP_ID); // TODO: Product Name?
+    return Config(nParams, nPresets, configIO.c_str(), getProcessorUID().pluginName.c_str(), getProcessorUID().pluginName.c_str(), PLUG_MFR, PLUG_VERSION_HEX, getProcessorUID().uniqueId, PLUG_MFR_ID, PLUG_LATENCY, PLUG_DOES_MIDI_IN, PLUG_DOES_MIDI_OUT, PLUG_DOES_MPE, PLUG_DOES_STATE_CHUNKS, PLUG_TYPE, PLUG_HAS_UI, PLUG_WIDTH, PLUG_HEIGHT, PLUG_HOST_RESIZE, PLUG_MIN_WIDTH, PLUG_MAX_WIDTH, PLUG_MIN_HEIGHT, PLUG_MAX_HEIGHT, BUNDLE_ID, APP_GROUP_ID); // TODO: Product Name?
 }
 
 END_IPLUG_NAMESPACE
