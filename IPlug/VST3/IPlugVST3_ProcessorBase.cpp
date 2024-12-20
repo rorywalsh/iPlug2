@@ -41,9 +41,21 @@ uint64_t iplug::GetAPIBusTypeForChannelIOConfig(int configIdx, ERoute dir, int b
     case 10:return SpeakerArr::k71_2; // aka k91Atmos
     case 16:return SpeakerArr::kAmbi3rdOrderACN;
     default:
-      DBGMSG("do not yet know what to do here\n");
-      assert(0);
-      return SpeakerArr::kEmpty;
+        //allow discrete number of channels
+        if (numChans <= 0 || numChans > 64)
+        {
+          // VST3 supports up to 64 channels in the bitset
+          SpeakerArr::kEmpty;
+        }
+
+        // Create a speaker arrangement by setting bits
+        SpeakerArrangement arrangement = 0;
+
+        for (int i = 0; i < numChans; ++i) {
+          arrangement |= (1ull << i); // Set the bit corresponding to the channel
+        }
+
+        return arrangement;
   }
 }
 #endif
