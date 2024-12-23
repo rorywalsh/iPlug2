@@ -33,7 +33,7 @@ static const ProcessorInfo getProcessorUID()
     // Default pluginId value
     std::string pluginId = "#x2B";
     
-    const std::string cabbageJson(cabbage::File::getCabbageSection());
+    const std::string cabbageJson(cabbage::File::getCabbageSection(""));
     const std::string pluginName(cabbage::File::getCsdWithoutExtension());
     if(nlohmann::json::accept(cabbageJson))
     {
