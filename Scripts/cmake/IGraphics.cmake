@@ -53,7 +53,7 @@ elseif(APPLE)
   )
   list(APPEND _opts "-Wno-deprecated-declarations")
 else()
-  message(FATAL_ERROR "Unsupported system ${CMAKE_SYSTEM_NAME}")
+  # message(FATAL_ERROR "Unsupported system ${CMAKE_SYSTEM_NAME}")
 endif()
 
 # Configure IGraphics Core
