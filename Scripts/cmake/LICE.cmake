@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #  ==============================================================================
 #  
 #  This file is part of the iPlug 2 library. Copyright (C) the iPlug 2 developers. 
@@ -7,8 +6,6 @@
 #
 #  ==============================================================================
 
-=======
->>>>>>> origin/linux
 cmake_minimum_required(VERSION 3.11)
 
 set(LICE_SRC "${WDL_DIR}/lice/")
