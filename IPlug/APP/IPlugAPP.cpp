@@ -13,8 +13,19 @@
 
 #if defined OS_MAC || defined OS_LINUX
 #include <IPlugSWELL.h>
-#else
-extern float GetScaleForHWND(HWND hWnd);
+#endif
+#if defined(OS_LINUX)
+const int TITLE_BAR_OFFSET = 17;
+#endif
+
+#if defined OS_MAC
+int GetTitleBarOffset()
+{
+  int offset = GetSystemMetrics(SM_CYMENU);
+  offset += 4;
+  
+  return offset;
+}
 #endif
 
 using namespace iplug;
@@ -35,40 +46,41 @@ IPlugAPP::IPlugAPP(const InstanceInfo& info, const Config& config)
   SetBlockSize(DEFAULT_BLOCK_SIZE);
   
   CreateTimer();
+
+#ifdef OS_LINUX
+  // Every 50ms check to see if the main window needs to be resized.
+  // This fixes basically all the issues related to resizing the window on Linux.
+  mResizeTimer = std::unique_ptr<Timer>(Timer::Create([&](Timer& timer) {
+    if (mNeedResize)
+    {
+      int viewWidth = GetEditorWidth();
+      int viewHeight = GetEditorHeight();
+      RECT r;
+      GetWindowRect(gHWND, &r);
+      SetWindowPos(gHWND, 0, r.left, r.bottom - viewHeight - TITLE_BAR_OFFSET, viewWidth, viewHeight + TITLE_BAR_OFFSET, 0);
+      mNeedResize = false;
+    }
+  }, 50));
+#endif
 }
 
 bool IPlugAPP::EditorResize(int viewWidth, int viewHeight)
 {
   bool parentResized = false;
-    
   if (viewWidth != GetEditorWidth() || viewHeight != GetEditorHeight())
   {
-    #if defined OS_MAC || defined NO_IGRAPHICS 
-    RECT rcClient, rcWindow;
-    POINT ptDiff;
-    
-    GetClientRect(gHWND, &rcClient);
-    GetWindowRect(gHWND, &rcWindow);
-    
-    ptDiff.x = (rcWindow.right - rcWindow.left) - rcClient.right;
-    ptDiff.y = (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
-    
-    int flags = 0;
-    
-    #ifdef OS_WIN
-    flags = SWP_NOMOVE;
-    float ss = GetScaleForHWND(gHWND);
-    #else
-    float ss = 1.f;
-    #endif
-    
-    SetWindowPos(gHWND, 0, rcWindow.left * ss,
-                 (rcWindow.bottom - viewHeight - ptDiff.y) * ss,
-                 (viewWidth + ptDiff.x) * ss,
-                 (viewHeight + ptDiff.y) * ss, flags);
+    #ifdef OS_MAC
+    const int titleBarOffset = GetTitleBarOffset();
+    RECT r;
+    GetWindowRect(gHWND, &r);
+    SetWindowPos(gHWND, 0, r.left, r.bottom - viewHeight - titleBarOffset, viewWidth, viewHeight + titleBarOffset, 0);
     parentResized = true;
-    #endif
-    
+  #elif defined(OS_LINUX)
+    // Resize later
+    mNeedResize = true;
+    SetWindowPos(mAppHost->mSite, 0, 0, 0, viewWidth, viewHeight, SWP_NOMOVE);
+    parentResized = true;
+  #endif
     SetEditorSize(viewWidth, viewHeight);
   }
   

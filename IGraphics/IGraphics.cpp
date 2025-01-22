@@ -36,6 +36,18 @@ using VST3_API_BASE = iplug::IPlugVST3Controller;
 #include "IPopupMenuControl.h"
 #include "ITextEntryControl.h"
 #include "IBubbleControl.h"
+#include "ITooltipControl.h"
+
+#if defined OS_LINUX
+/*
+ * Up to GCC 8 they have "forgotten" to transport C++11 standard expf into std:: namespace
+ */
+namespace std {
+  inline _GLIBCXX_CONSTEXPR float
+  expf(float __x)
+  { return __builtin_expf(__x); }
+};
+#endif
 
 using namespace iplug;
 using namespace igraphics;
@@ -200,6 +212,7 @@ void IGraphics::RemoveAllControls()
   mTextEntryControl = nullptr;
   mCornerResizer = nullptr;
   mPerfDisplay = nullptr;
+  mTooltipControl = nullptr;
     
 #ifndef NDEBUG
   mLiveEdit = nullptr;
@@ -373,6 +386,23 @@ void IGraphics::AttachPopupMenuControl(const IText& text, const IRECT& bounds)
 void IGraphics::RemovePopupMenuControl()
 {
   mPopupControl = nullptr;
+}
+
+void IGraphics::AttachToolTipControl(ITooltipControl* pControl)
+{
+  std::unique_ptr<ITooltipControl> control(pControl);
+  mTooltipControl.swap(control);
+  mTooltipControl->SetDelegate(*GetDelegate());
+}
+
+void IGraphics::AttachToolTipControl(const IColor& BGColor, const IText& text)
+{
+  AttachToolTipControl(new ITooltipControl(BGColor, text));
+}
+
+void IGraphics::RemoveToolTipControl()
+{
+  mTooltipControl = nullptr;
 }
 
 void IGraphics::AttachTextEntryControl()
@@ -565,6 +595,9 @@ void IGraphics::ForAllControlsFunc(IControlFunction func)
   
   if (mPopupControl)
     func(mPopupControl.get());
+  
+  if (mTooltipControl)
+    func(mTooltipControl.get());
   
   if (mBubbleControls.GetSize())
   {
@@ -1146,12 +1179,18 @@ bool IGraphics::OnMouseOver(float x, float y, const IMouseMod& mod)
 
   if (mMouseOver)
     mMouseOver->OnMouseOver(x, y, mod);
+  
+  if(mTooltipControl)
+    mTooltipControl->SetControl(pControl);
 
   return pControl;
 }
 
 void IGraphics::OnMouseOut()
 {
+  if(mTooltipControl)
+    mTooltipControl->SetControl(nullptr); // Hides
+  
   Trace("IGraphics::OnMouseOut", __LINE__, "");
 
   // Store the old cursor type so this gets restored when the mouse enters again
@@ -1535,7 +1574,9 @@ IBitmap IGraphics::GetScaledBitmap(IBitmap& src)
 void IGraphics::EnableTooltips(bool enable)
 {
   mEnableTooltips = enable;
-  if (enable) mEnableMouseOver = true;
+  
+  if (enable)
+    EnableMouseOver(true);
 }
 
 void IGraphics::EnableLiveEdit(bool enable)

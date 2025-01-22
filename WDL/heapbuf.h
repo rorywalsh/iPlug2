@@ -35,6 +35,15 @@
 
 #ifndef WDL_HEAPBUF_IMPL_ONLY
 
+#ifdef WDL_HEAPBUF_TRACE
+#include <windows.h>
+#define WDL_HEAPBUF_TRACEPARM(x) ,(x)
+#else
+#define WDL_HEAPBUF_TRACEPARM(x)
+#endif
+
+#include <cstring>
+#include <cstdlib>
 #include "wdltypes.h"
 
 class WDL_HeapBuf

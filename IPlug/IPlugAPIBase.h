@@ -12,6 +12,7 @@
 
 #include <cstring>
 #include <cstdint>
+#include <atomic>
 #include <memory>
 
 #include "ptrlist.h"
@@ -183,6 +184,8 @@ public:
 
   /** Called by the API class to create the timer that pumps the parameter/message queues */
   void CreateTimer();
+
+  void OnTimer(Timer& t);
   
 private:
   /** Implementations call into the APIs resize hooks
@@ -208,8 +211,6 @@ private:
   
   /** \todo */
   virtual void TransmitSysExDataFromProcessor(const SysExData& data) {}
-
-  void OnTimer(Timer& t);
 
   friend class IPlugAPP;
   friend class IPlugAAX;
