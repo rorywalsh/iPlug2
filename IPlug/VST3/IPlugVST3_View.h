@@ -157,9 +157,9 @@ public:
   Steinberg::tresult PLUGIN_API setFrame (Steinberg::IPlugFrame* frame) override 
   { 
   #ifdef OS_LINUX
-    auto rloop = iplug::IPlugVST3_RunLoop::Create(frame);
-    rloop->CreateTimer([&]() { mOwner.OnIdle(); }, 20);
-    mOwner.SetIntegration(rloop);
+    // auto rloop = iplug::IPlugVST3_RunLoop::Create(frame);
+    // rloop->CreateTimer([&]() { mOwner.OnIdle(); }, 20);
+    // mOwner.SetIntegration(rloop);
   #endif
   
     return CPluginView::setFrame(frame);

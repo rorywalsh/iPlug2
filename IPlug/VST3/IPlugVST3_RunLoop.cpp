@@ -8,6 +8,8 @@
  ==============================================================================
 */
 
+#ifdef Cabbage_RunLoop
+
 #include "IPlugVST3_RunLoop.h"
 
 BEGIN_IPLUG_NAMESPACE
@@ -208,3 +210,5 @@ int IPlugVST3_RunLoop::xt_watch(xcbt_embed* pe, int fd)
 }
 
 END_IPLUG_NAMESPACE
+
+#endif

@@ -10,6 +10,8 @@
 #ifndef __IPLUGVST3_RUNLOOP
 #define __IPLUGVST3_RUNLOOP
 
+#ifdef Cabbage_RunLoop
+
 #include <memory>
 
 #include "IPlugPlatform.h"
@@ -67,3 +69,5 @@ public:
 END_IPLUG_NAMESPACE
 
 #endif
+
+#endif //Cabbage_Runloop
