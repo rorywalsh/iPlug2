@@ -602,6 +602,9 @@ Steinberg::FUnknown* MakeProcessor()
 
 static Config MakeConfig(int nParams, int nPresets, const std::string& configIO)
 {
+#ifndef APP_GROUP_ID
+  #define APP_GROUP_ID ""
+#endif
     return Config(nParams, nPresets, configIO.c_str(), getProcessorUID().pluginName.c_str(), getProcessorUID().pluginName.c_str(), PLUG_MFR, PLUG_VERSION_HEX, getProcessorUID().uniqueId, PLUG_MFR_ID, PLUG_LATENCY, PLUG_DOES_MIDI_IN, PLUG_DOES_MIDI_OUT, PLUG_DOES_MPE, PLUG_DOES_STATE_CHUNKS, PLUG_TYPE, PLUG_HAS_UI, PLUG_WIDTH, PLUG_HEIGHT, PLUG_HOST_RESIZE, PLUG_MIN_WIDTH, PLUG_MAX_WIDTH, PLUG_MIN_HEIGHT, PLUG_MAX_HEIGHT, BUNDLE_ID, APP_GROUP_ID); // TODO: Product Name?
 }
 
