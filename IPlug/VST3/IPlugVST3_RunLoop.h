@@ -10,8 +10,6 @@
 #ifndef __IPLUGVST3_RUNLOOP
 #define __IPLUGVST3_RUNLOOP
 
-#ifdef Cabbage_RunLoop
-
 #include <memory>
 
 #include "IPlugPlatform.h"
@@ -23,7 +21,6 @@
 #include "base/source/fobject.h"
 #include "pluginterfaces/gui/iplugview.h"
 
-#include "xcbt.h"
 
 BEGIN_IPLUG_NAMESPACE
 
@@ -32,25 +29,20 @@ struct EventHandler;
 struct TimerHandler;
 
 // This struct MUST be pointer-compatible with xcbt_embed.
-struct IPlugVST3_RunLoop final : xcbt_embed
+struct IPlugVST3_RunLoop final 
 {
 public:
   using Self = IPlugVST3_RunLoop;
 
 private:
   Steinberg::Linux::IRunLoop *runLoop;
-  xcbt x;
+
   struct EventHandler* eHandler;
   bool eHandlerSet;
   struct TimerHandler* tHandler;
   bool tHandlerSet;
 
   WDL_PtrList<VST3Timer> mTimers;
-
-  static void xt_dtor(xcbt_embed* self);
-  static int  xt_set_x(xcbt_embed* self, xcbt x);
-  static int  xt_set_timer(xcbt_embed* self, int msec);
-  static int  xt_watch(xcbt_embed* self, int fd);
   
   friend class EventHandler;
   friend class TimerHandler;
