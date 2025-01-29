@@ -99,13 +99,12 @@ list(APPEND _src
   "${sdk}/updatehandler.h"
 )
 # Timer isn't implemented on Linux
-if (NOT (CMAKE_SYSTEM_NAME MATCHES "Linux"))
-  list(APPEND _src
-    "${sdk}/timer.cpp"
-    "${sdk}/timer.h"
-  )
-  
-else()
+list(APPEND _src
+  "${sdk}/timer.cpp"
+  "${sdk}/timer.h"
+)
+
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
   list(APPEND _def "SMTG_OS_LINUX")
 endif()
 
