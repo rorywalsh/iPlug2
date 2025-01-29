@@ -61,5 +61,3 @@ public:
 END_IPLUG_NAMESPACE
 
 #endif
-
-#endif //Cabbage_Runloop
