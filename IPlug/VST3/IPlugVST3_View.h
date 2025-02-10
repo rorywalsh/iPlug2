@@ -139,11 +139,16 @@ public:
     
   Steinberg::tresult PLUGIN_API removed() override
   {
+#ifdef OS_LINUX
+    //need to destroy timers to prevent dangling pointers..
+    iplug::IPlugVST3_RunLoop::Destroy(runLoop);
+#endif
+
     if (mOwner.HasUI())
     {
       mOwner.CloseWindow();
     }
-    
+
     return CPluginView::removed();
   }
 
@@ -154,14 +159,16 @@ public:
     return Steinberg::kResultOk;
   }
 
-  Steinberg::tresult PLUGIN_API setFrame (Steinberg::IPlugFrame* frame) override 
-  { 
+  Steinberg::tresult PLUGIN_API setFrame (Steinberg::IPlugFrame* frame) override
+  {
   #ifdef OS_LINUX
-    auto rloop = iplug::IPlugVST3_RunLoop::Create(frame);
-    rloop->CreateTimer([&]() { mOwner.OnIdle(); }, 20);
-    mOwner.SetIntegration(rloop);
+      runLoop = iplug::IPlugVST3_RunLoop::Create(frame);
+      runLoop->CreateTimer([&]() {
+          mOwner.OnIdle();
+      }, 20);
+      mOwner.SetIntegration(runLoop);
   #endif
-  
+
     return CPluginView::setFrame(frame);
   }
 
@@ -365,4 +372,7 @@ public:
   }
 
   T& mOwner;
+  bool frameIsValid = true;
+
+  iplug::IPlugVST3_RunLoop* runLoop = nullptr;
 };
