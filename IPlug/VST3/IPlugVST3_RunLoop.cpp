@@ -81,8 +81,20 @@ IPlugVST3_RunLoop* IPlugVST3_RunLoop::Create(Steinberg::FUnknown *frame)
   return ev;
 }
 
-void IPlugVST3_RunLoop::Destory(IPlugVST3_RunLoop* self)
+void IPlugVST3_RunLoop::Destroy(IPlugVST3_RunLoop* self)
 {
+    // printf("Releasing eHandeler %u\n", ev->eHandler->getRefCount()); // was checking refCounter is 1...
+    // printf("Releasing tHandler %u\n", ev->tHandler->getRefCount());
+    self->eHandler->release();
+    self->tHandler->release();
+
+    int i = 0;
+    while ((i = self->mTimers.GetSize()) > 0)
+    {
+      self->DestroyTimer(self->mTimers.Get(i - 1));
+    }
+
+    delete self;
 
 }
 
@@ -90,6 +102,7 @@ VST3Timer* IPlugVST3_RunLoop::CreateTimer(std::function<void()> callback, int ms
 {
   auto tm = new VST3Timer();
   tm->callback = callback;
+  const int num =  mTimers.GetSize();
   if (runLoop->registerTimer(tm, msec) == Steinberg::kResultOk)
   {
     mTimers.Add(tm);
