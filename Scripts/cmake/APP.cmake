@@ -15,16 +15,29 @@ add_library(iPlug2_APP INTERFACE)
 set(sdk ${IPLUG2_DIR}/IPlug/APP)
 if(CabbageApp STREQUAL "${CABBAGE_BUILD_TARGET}" OR CabbageStandaloneApp STREQUAL "${CABBAGE_BUILD_TARGET}")
   message("Setting custom Cabbage app target src")
-  set(_src
-    "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.cpp"
-    "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_host.h"
-    "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_dialog.cpp"
-    "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_host.cpp"
-    "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_main.cpp"
-    "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.h"
-    ${IPLUG_DEPS}/RTAudio/RtAudio.cpp
-    ${IPLUG_DEPS}/RTMidi/RtMidi.cpp
-  )
+  if(UNIX AND NOT APPLE)
+    set(_src
+      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.cpp"
+      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_host.h"
+      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_host.cpp"
+      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_main.cpp"
+      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.h"
+      ${IPLUG_DEPS}/RTAudio/RtAudio.cpp
+      ${IPLUG_DEPS}/RTMidi/RtMidi.cpp
+    )
+  else()
+    set(_src
+      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.cpp"
+      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_host.h"
+      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_dialog.cpp"
+      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_host.cpp"
+      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_main.cpp"
+      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.h"
+      ${IPLUG_DEPS}/RTAudio/RtAudio.cpp
+      ${IPLUG_DEPS}/RTMidi/RtMidi.cpp
+    )
+  endif()
+
   set(_inc
     "${CMAKE_SOURCE_DIR}/src"
     ${sdk}
@@ -104,28 +117,22 @@ elseif(UNIX AND NOT APPLE)
   option(IPLUG_APP_PULSE "Use Pulse Audio on Linux" ON)
 
   # SWELL configuration for Linux
-  set(swell_src
-    swell.h swell.cpp swell-appstub-generic.cpp swell-dlg-generic.cpp
-    swell-gdi-generic.cpp swell-gdi-lice.cpp swell-ini.cpp swell-kb-generic.cpp
-    swell-menu-generic.cpp swell-miscdlg-generic.cpp swell-misc-generic.cpp
-    swell-wnd-generic.cpp swell-generic-gdk.cpp
-  )
-  list(TRANSFORM swell_src PREPEND "${WDL_DIR}/swell/")
+#  set(swell_src
+#    swell.h swell.cpp swell-appstub-generic.cpp swell-dlg-generic.cpp
+#    swell-gdi-generic.cpp swell-gdi-lice.cpp swell-ini.cpp swell-kb-generic.cpp
+#    swell-menu-generic.cpp swell-miscdlg-generic.cpp swell-misc-generic.cpp
+#    swell-wnd-generic.cpp swell-generic-gdk.cpp
+#  )
+#  list(TRANSFORM swell_src PREPEND "${WDL_DIR}/swell/")
 
   iplug_target_add(iPlug2_APP INTERFACE
     DEFINE
-      SWELL_COMPILED SWELL_SUPPORT_GTK SWELL_TARGET_GDK=3 SWELL_LICE_GDI
-      SWELL_FREETYPE _FILE_OFFSET_BITS=64 WDL_ALLOW_UNSIGNED_DEFAULT_CHAR
+      _FILE_OFFSET_BITS=64 WDL_ALLOW_UNSIGNED_DEFAULT_CHAR
     INCLUDE
-      "${WDL_DIR}/swell/"
-      "${WDL_DIR}/lice/"
+
     LINK
-      LICE_Core LICE_PNG LICE_ZLIB
       PkgConfig::DEPS "X11" "Xi"
     SOURCE
-      ${swell_src}
-      ${PLUG_RESOURCES_DIR}/main.rc_mac_dlg
-      ${PLUG_RESOURCES_DIR}/main.rc_mac_menu
   )
 
   # RtAudio configuration
