@@ -374,5 +374,7 @@ public:
   T& mOwner;
   bool frameIsValid = true;
 
+#ifdef OS_LINUX
   iplug::IPlugVST3_RunLoop* runLoop = nullptr;
+#endif
 };
