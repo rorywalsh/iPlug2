@@ -175,10 +175,11 @@ function(iplug_configure_app target)
       RUNTIME_OUTPUT_DIRECTORY "${PLUG_NAME}-app"
     )
 
-    add_custom_command(TARGET ${target} POST_BUILD
-      COMMAND "${CMAKE_BINARY_DIR}/postbuild-win.bat"
-      ARGS "\"$<TARGET_FILE:${target}>\"" "\".exe\""
-    )
+#    add_custom_command(TARGET ${target} POST_BUILD
+#      COMMAND "${CMAKE_BINARY_DIR}/postbuild-win.bat"
+#      ARGS "\"$<TARGET_FILE:${target}>\"" "\".exe\""
+#    )
+
   elseif(APPLE)
     set(app_out_dir "${out_dir}/${PLUG_NAME}.app")
     set(res_dir "${app_out_dir}/Contents/Resources")
