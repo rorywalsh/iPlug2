@@ -6,6 +6,9 @@
 #
 #  ==============================================================================
 
+# I'm after removing a lot of the SWELL stuff here, I'll need to bring it back 
+# in for the standalone exports 
+
 cmake_minimum_required(VERSION 3.11)
 
 # Create the iPlug2_APP interface library
@@ -29,7 +32,6 @@ if(CabbageApp STREQUAL "${CABBAGE_BUILD_TARGET}" OR CabbageStandaloneApp STREQUA
     set(_src
       "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.cpp"
       "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_host.h"
-      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_dialog.cpp"
       "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_host.cpp"
       "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_main.cpp"
       "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.h"
@@ -84,20 +86,9 @@ elseif(APPLE)
   # Set language for files combining C++ and Objective-C
   set_property(SOURCE ${_src} PROPERTY LANGUAGE "OBJCXX")
   iplug_target_add(iPlug2_APP INTERFACE
-    DEFINE "__MACOSX_CORE__" "SWELL_COMPILED"
+    DEFINE "__MACOSX_CORE__"
     LINK "-framework AppKit" "-framework CoreMIDI" "-framework CoreAudio"
     SOURCE
-      "${WDL_DIR}/swell/swell-appstub.mm"
-      "${WDL_DIR}/swell/swellappmain.mm"
-      "${WDL_DIR}/swell/swell-ini.cpp"
-      "${WDL_DIR}/swell/swell-dlg.mm"
-      "${WDL_DIR}/swell/swell-kb.mm"
-      "${WDL_DIR}/swell/swell-miscdlg.mm"
-      "${WDL_DIR}/swell/swell-menu.mm"
-      "${WDL_DIR}/swell/swell-wnd.mm"
-      "${WDL_DIR}/swell/swell.cpp"
-      "${WDL_DIR}/swell/swell-misc.mm"
-      "${WDL_DIR}/swell/swell-gdi.mm"
   )
 elseif(UNIX AND NOT APPLE)
   # Linux-specific configuration
