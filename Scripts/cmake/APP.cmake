@@ -18,7 +18,7 @@ add_library(iPlug2_APP INTERFACE)
 set(sdk ${IPLUG2_DIR}/IPlug/APP)
 if(CabbageApp STREQUAL "${CABBAGE_BUILD_TARGET}" OR CabbageStandaloneApp STREQUAL "${CABBAGE_BUILD_TARGET}")
   message("Setting custom Cabbage app target src")
-  if(UNIX AND NOT APPLE)
+  if(NOT APPLE)
     set(_src
       "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.cpp"
       "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_host.h"
@@ -33,7 +33,7 @@ if(CabbageApp STREQUAL "${CABBAGE_BUILD_TARGET}" OR CabbageStandaloneApp STREQUA
       "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.cpp"
       "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_host.h"
       "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_host.cpp"
-      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_main.cpp"
+      "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP_main.mm"
       "${CMAKE_SOURCE_DIR}/src/app/CabbageAPP.h"
       ${IPLUG_DEPS}/RTAudio/RtAudio.cpp
       ${IPLUG_DEPS}/RTMidi/RtMidi.cpp
